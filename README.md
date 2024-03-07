@@ -43,3 +43,12 @@ Add new task: Clicking the button should open a modal with inputs to create a ne
 Search bar: When you type a note name you can filter your note.
 
 Filter icon: you can filter your tasks or order your tasks.
+
+
+IMPORTANT:
+If you are on the master branch the app uses localstorage to persist data. This one was the first solution
+If you are on the connect-with-api branch the app uses .Net api to persist data. In this case you will need to run the API locally. Here is the repository: https://github.com/micapremat/clerk-todolist-api
+
+
+To run this project you will need to clone the repository. Please use git clone <https code>
+
