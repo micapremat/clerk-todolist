@@ -4,22 +4,26 @@ import BaseButton from './BaseButton.vue';
 import BaseSearchBar from './BaseSearchBar.vue';
 import Task from './Task.vue'
 import CreateNewTask from './CreateNewTask.vue'
+import axios from 'axios'
 
 
 const search = ref('')
 const openCreateNewTask = ref(false)
-
 const tasks = ref([])
 
-const tasks_asc = computed(() => tasks.value.sort((a, b) => (a.priority < b.priority) ? 1 : ((b.priority < a.priority) ? -1 : 0)))
+const tasks_asc = computed(() => tasks.value.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0)))
 
-const updateAllTasks = (value) => {
-    tasks.value = value
-    localStorage.setItem('tasks', JSON.stringify(value))
+const updateAllTasks = () => {
+    getAllTasks()
 }
 
-onMounted(() => {
-  tasks.value = JSON.parse(localStorage.getItem('tasks')) || []
+const getAllTasks = async () => {
+  let response = await axios.get('https://localhost:7096/api/task')
+  tasks.value = response.data
+}
+
+onMounted(async () => {
+   getAllTasks()
 })
 
 </script>

@@ -1,7 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import BaseModal from './BaseModal.vue'
 import BaseButton from './BaseButton.vue'
+import axios from 'axios'
+
 
 const emit = defineEmits(['close', 'updateAllTasks']);
 
@@ -9,18 +11,41 @@ const props = defineProps(['task', 'allTasks'])
 
 const task = ref(props.task)
 const allTasks = ref(props.allTasks)
+const displayAlert = ref(false)
+const alertText = ref("")
 
-const deleteTask = () => {
-    allTasks.value = allTasks.value.filter(task => task.id != props.task.id);
-    emit('updateAllTasks', allTasks.value)
-    emit('close')
+onMounted(() => {
+    task.value.priority = task.value.priority === 0 ? task.value.priority = 'High' : task.value.priority === 1 ? 'Medium' : task.value.priority = 'Low'
+})
+
+const deleteTask = async () => {
+    await axios.delete('https://localhost:7096/api/task/'+ task.value.id)
+    .then(() => {
+        emit('updateAllTasks')
+        emit('close')
+    })
+    .catch(e => {
+        console.log(e)
+        displayAlert.value = true
+    })
 }
 
-const editTask = () => {   
-    allTasks.value = allTasks.value.filter(task => task.id != props.task.id);  
-    allTasks.value.push(task.value)
-    emit('updateAllTasks', allTasks.value)
-    emit('close')
+const editTask = async () => {
+    if (task.value.title.trim() === '' || task.value.priority.trim() === '' || task.value.description.trim() === '') {
+        alertText.value = "Please complete the require fields."
+        displayAlert.value = true
+        return
+    }
+    task.value.priority = task.value.priority === 'High' ? task.value.priority = 0 : task.value.priority === 'Medium' ? task.value.priority = 1 : task.value.priority = 2 
+    await axios.patch('https://localhost:7096/api/task/'+ task.value.id, task.value)
+    .then(() => {
+        emit('updateAllTasks')
+        emit('close')
+    })
+    .catch(e => {
+        console.log(e)
+        displayAlert.value = true
+    })
 }
 
 
@@ -30,6 +55,14 @@ const editTask = () => {
         <BaseModal @close="$emit('close')" :width="'w-[500px]'">
             <template v-slot:header>
                 <div>
+                    <!--Alert-->
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" v-if="displayAlert">
+                        <span class="block sm:inline"> {{ alertText }}</span>
+                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="displayAlert = false">
+                            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                        </span>
+                    </div>
+                    <!--End alert-->
                     <h2 class="text-2xl font-bold text-left mt-6 ml-3 border-b border-[#B5D9E2]">Edit task " {{task.title}} "</h2>
                 </div>
             </template>
