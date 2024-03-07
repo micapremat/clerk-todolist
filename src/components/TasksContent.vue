@@ -11,12 +11,19 @@ const openCreateNewTask = ref(false)
 
 const tasks = ref([])
 
-const tasks_asc = computed(() => tasks.value.sort((a, b) => (a.priority < b.priority) ? 1 : ((b.priority < a.priority) ? -1 : 0)))
+const tasks_asc = computed(() => tasks.value.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0)))
 
 const updateAllTasks = (value) => {
     tasks.value = value
     localStorage.setItem('tasks', JSON.stringify(value))
 }
+
+const getTasks = computed(() => {
+  if (search.value) {
+    return tasks.value.filter((item) => item.title.toLowerCase().includes(search.value.toLowerCase()));
+  }
+  return tasks_asc.value
+})
 
 onMounted(() => {
   tasks.value = JSON.parse(localStorage.getItem('tasks')) || []
@@ -30,7 +37,7 @@ onMounted(() => {
         <BaseButton rounded :text="'Add new task'" class="bg-primary text-white"  @click="openCreateNewTask = true"/>
       </div>
       <div class="lg:flex-col my-5">
-        <BaseSearchBar :search="search" :placeholder="'Search task'"/>
+        <BaseSearchBar :search="search" :placeholder="'Search task'" v-model="search"/>
       </div>
       <div class="lg:flex-col text-right">
         <button>  
@@ -39,7 +46,7 @@ onMounted(() => {
       </div>
     </div>
     <div >
-      <div v-for="task in tasks_asc" :key="task.id">
+      <div v-for="task in getTasks" :key="task.id">
         <Task :task="task" :allTasks="tasks"  @updateAllTasks="updateAllTasks" />
       </div>
       <div v-if="!tasks.length" class="text-center mt-10">
