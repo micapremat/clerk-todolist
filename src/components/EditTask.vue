@@ -5,41 +5,24 @@ import BaseButton from './BaseButton.vue'
 
 const emit = defineEmits(['close', 'updateAllTasks']);
 
-const newTask = ref(
-  {
-    id: undefined,
-    title: '',
-    subtitle: '',
-    description: '',
-    priority: 'High',
-    done: false,
-    subtasks: []
-  },
-)
+const props = defineProps(['task', 'allTasks'])
 
-const allTasks = ref([])
+const task = ref(props.task)
+const allTasks = ref(props.allTasks)
 
-
-const createNewTask = () => {
-    if (newTask.value.title.trim() === '' || newTask.value.priority.trim() === '' || newTask.value.description.trim() === '') {
-        return
-    }
-    let id = localStorage.getItem('id')
-    if (id === null) {
-        newTask.value.id = 1
-        localStorage.setItem("id", newTask.value.id)
-    } else {
-        newTask.value.id = parseInt(id) + 1
-        localStorage.setItem("id", newTask.value.id)
-    }
-    let items = JSON.parse(localStorage.getItem('tasks'))
-    if (items !== null) {
-        allTasks.value = items
-    }
-    allTasks.value.push(newTask.value)
+const deleteTask = () => {
+    allTasks.value = allTasks.value.filter(task => task.id != props.task.id);
     emit('updateAllTasks', allTasks.value)
     emit('close')
 }
+
+const editTask = () => {   
+    allTasks.value = allTasks.value.filter(task => task.id != props.task.id);  
+    allTasks.value.push(task.value)
+    emit('updateAllTasks', allTasks.value)
+    emit('close')
+}
+
 
 </script>
 <template>
@@ -47,22 +30,22 @@ const createNewTask = () => {
         <BaseModal @close="$emit('close')" :width="'w-[500px]'">
             <template v-slot:header>
                 <div>
-                    <h2 class="text-2xl font-bold text-left mt-6 ml-3 border-b border-[#B5D9E2]">Create new task</h2>
+                    <h2 class="text-2xl font-bold text-left mt-6 ml-3 border-b border-[#B5D9E2]">Edit task " {{task.title}} "</h2>
                 </div>
             </template>
             <template v-slot:body>
                 <div class=" w-[350px]">
                     <div class="mt-6 text-left w-[350px]">
                         <label class="text-black text-left font-bold text-lg block">Title*</label>
-                        <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="newTask.title"/>
+                        <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="task.title"/>
                     </div>
                     <div class="mt-6 text-left w-[350px]">
                         <label class="text-black text-left font-bold text-lg block">Subtitle</label>
-                        <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="newTask.subtitle"/>
+                        <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="task.subtitle"/>
                     </div>
                     <div class="mt-6 text-left w-[350px]">
                         <label class="text-black text-left font-bold text-lg block">Priority*</label>
-                        <select class=" py-1 px-0 w-full text-sm text-black border-0 border-b-2 border-primary focus:outline-none focus:ring-0 focus:border-primary mt-1" v-model="newTask.priority">
+                        <select class=" py-1 px-0 w-full text-sm text-black border-0 border-b-2 border-primary focus:outline-none focus:ring-0 focus:border-primary mt-1" v-model="task.priority">
                             <option selected > High</option>
                             <option > Medium</option>
                             <option > Low</option>
@@ -70,7 +53,7 @@ const createNewTask = () => {
                     </div>
                     <div class="mt-6 text-left w-[350px]">
                         <label class="text-black text-left font-bold text-lg block">Description*</label>
-                        <textarea type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] h-[200px] px-2" v-model="newTask.description"></textarea>
+                        <textarea type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] h-[200px] px-2" v-model="task.description"></textarea>
                     </div>
                 </div>
                 <!-- <div class="text-left mt-6">
@@ -88,9 +71,15 @@ const createNewTask = () => {
                 />
                 <BaseButton
                     rounded
-                    :text="'Create task'"
-                    @click="createNewTask()"
+                    :text="'Accept'"
+                    @click="editTask()"
                     class="bg-primary text-white my-8 py-2 mx-5"
+                />
+                <BaseButton
+                    rounded
+                    :text="'Delete'"
+                    @click="deleteTask()"
+                    class="bg-high text-white my-8 py-2 mx-5"
                 />
                 </div>
             </template>

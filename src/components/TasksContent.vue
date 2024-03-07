@@ -1,43 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import BaseButton from './BaseButton.vue';
 import BaseSearchBar from './BaseSearchBar.vue';
 import Task from './Task.vue'
 import CreateNewTask from './CreateNewTask.vue'
-import CreateNewSubtask from './CreateNewSubtask.vue'
+
 
 const search = ref('')
 const openCreateNewTask = ref(false)
-const openCreateNewSubtask = ref(false)
 
-const tasks = ref([
-  {
-    id: 1,
-    title: 'Design UI',
-    subtitle: 'subtitle',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec aliquet leo.',
-    priority: 'Low',
-    done: false,
-    subtasks: [
-      {
-        id: 1,
-        title: 'title subtask',
-        subtitle: 'subtitle subtask',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec aliquet leo. Sed rutrum orci sem, vitae pulvinar odio maximus quis. Ut ut tellus non urna vehicula tristique. ',
-        done: false
-      }
-    ]
-  },
-  {
-    id: 1,
-    title: 'Initialize project',
-    subtitle: 'do it now',
-    description: ' In nec aliquet leo. Sed rutrum orci sem, vitae pulvinar odio maximus quis. Ut ut tellus non urna vehicula tristique. ',
-    priority: 'Medium',
-    done: true,
-    subtasks: []
-  }
-])
+const tasks = ref([])
+
+const tasks_asc = computed(() => tasks.value.sort((a, b) => (a.priority < b.priority) ? 1 : ((b.priority < a.priority) ? -1 : 0)))
+
+const updateAllTasks = (value) => {
+    tasks.value = value
+    localStorage.setItem('tasks', JSON.stringify(value))
+}
+
+onMounted(() => {
+  tasks.value = JSON.parse(localStorage.getItem('tasks')) || []
+})
 
 </script>
 <template>
@@ -56,14 +39,14 @@ const tasks = ref([
       </div>
     </div>
     <div >
-      <div v-for="task in tasks">
-        <Task :task="task"/>
-        <div class="text-right w-10/12">
-          <BaseButton :text="'Add new subtask'" outline rounded class="outline-2 outline-primary text-primary py-1 mt-5 font-semibold text-xs" @click="openCreateNewSubtask = true"/>
-        </div>
+      <div v-for="task in tasks_asc" :key="task.id">
+        <Task :task="task" :allTasks="tasks"  @updateAllTasks="updateAllTasks" />
+      </div>
+      <div v-if="!tasks.length" class="text-center mt-10">
+        <h3>Start creating a new task to see it here </h3>
       </div>
     </div>
-    <CreateNewTask v-if="openCreateNewTask" @close="openCreateNewTask = false"/>
-    <CreateNewSubtask v-if="openCreateNewSubtask" @close="openCreateNewSubtask = false"/>
+    <CreateNewTask v-if="openCreateNewTask" @close="openCreateNewTask = false" @updateAllTasks="updateAllTasks"/>
+    
   </div>
 </template>
