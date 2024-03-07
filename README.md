@@ -22,8 +22,33 @@ npm install
 npm run dev
 ```
 
-### Compile and Minify for Production
+### How to use the app
 
-```sh
-npm run build
-```
+The app has a single page. By default, notes are ordered by priority.
+
+No tasks: You will see a message.
+
+Task: Each task has a circle on the left indicating whether the task is done or not - title - subtitle - small collapsable icon (not working right now but I think it's a usefull feature) - priority (could be high - medium - low) - a button to edit the task - description. Within the task there may or may not be subtasks. 
+
+Subtask: Each subtask has the same circle on the left - title - subtitle - collapsable - delete button - description.
+
+Edit task button: Clicking the button should open a modal with the current data. Here you can update the data or delete the task.
+
+Delete button: When you click the button, you delete the subtask.
+
+Add new subtask: Clicking the button should open a modal with inputs to create a new subtask for the current task.
+
+Add new task: Clicking the button should open a modal with inputs to create a new task.
+
+Search bar: When you type a note name you can filter your note.
+
+Filter icon: you can filter your tasks or order your tasks.
+
+
+IMPORTANT:
+If you are on the master branch the app uses localstorage to persist data. This one was the first solution
+If you are on the connect-with-api branch the app uses .Net api to persist data. In this case you will need to run the API locally. Here is the repository: https://github.com/micapremat/clerk-todolist-api
+
+
+To run this project you will need to clone the repository. Please use git clone <https code>
+
