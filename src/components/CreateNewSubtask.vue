@@ -66,7 +66,7 @@ const addSubtask = () => {
             <template v-slot:body>
                 <div class=" w-[350px]">
                     <div class="mt-6 text-left w-[350px]">
-                        <label class="text-black text-left font-bold text-lg block">Title</label>
+                        <label class="text-black text-left font-bold text-lg block">Title*</label>
                         <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="subtask.title"/>
                     </div>
                     <div class="mt-6 text-left w-[350px]">
@@ -74,7 +74,7 @@ const addSubtask = () => {
                         <input type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] px-2" maxlength="30" v-model="subtask.subtitle"/>
                     </div>
                     <div class="mt-6 text-left w-[350px]">
-                        <label class="text-black text-left font-bold text-lg block">Description</label>
+                        <label class="text-black text-left font-bold text-lg block">Description*</label>
                         <textarea type="text" class="text-left text-black rounded-lg border border-primary border-3 py-2 mt-1 w-[350px] h-[200px] px-2" v-model="subtask.description">
                         </textarea>
                     </div>
