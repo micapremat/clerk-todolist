@@ -22,6 +22,12 @@ const getAllTasks = async () => {
   tasks.value = response.data
 }
 
+const getTasks = computed(() => {
+  if (search.value) {
+    return tasks.value.filter((item) => item.title.toLowerCase().includes(search.value.toLowerCase()));
+  }
+  return tasks_asc.value
+})
 
 onMounted(async () => {
    getAllTasks()
@@ -35,7 +41,7 @@ onMounted(async () => {
         <BaseButton rounded :text="'Add new task'" class="bg-primary text-white"  @click="openCreateNewTask = true"/>
       </div>
       <div class="lg:flex-col my-5">
-        <BaseSearchBar :search="search" :placeholder="'Search task'"/>
+        <BaseSearchBar :search="search" :placeholder="'Search task'" v-model="search"/>
       </div>
       <div class="lg:flex-col text-right">
         <button>  
@@ -44,7 +50,7 @@ onMounted(async () => {
       </div>
     </div>
     <div >
-      <div v-for="task in tasks_asc" :key="task.id+task.subtasks.length">
+      <div v-for="task in getTasks" :key="task.id+task.subtasks.length">
         <Task :task="task" :allTasks="tasks"  @updateAllTasks="updateAllTasks" />
       </div>
       <div v-if="!tasks.length" class="text-center mt-10">
