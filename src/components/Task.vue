@@ -91,9 +91,8 @@ watch(task.value.subtasks, newVal => {
         </div>
         
         <!--Subtasks-->
-        <div v-for="subtask in task.subtasks" :key="subtask.id + updateKey">
-            <Subtask :subtask="subtask" :task="task" :allTasks="allTasks" @updateAllTasks="updateAllTasks"/>
-        </div>
+        <Subtask :task="task" @updateAllTasks="updateAllTasks"/>
+        
         <div class="text-right w-10/12">
           <BaseButton :text="'Add new subtask'" outline rounded class="outline-2 outline-primary text-primary py-1 mt-5 font-semibold text-xs" @click="openCreateNewSubtask = true"/>
         </div>
