@@ -22,6 +22,7 @@ const getAllTasks = async () => {
   tasks.value = response.data
 }
 
+
 onMounted(async () => {
    getAllTasks()
 })
@@ -43,7 +44,7 @@ onMounted(async () => {
       </div>
     </div>
     <div >
-      <div v-for="task in tasks_asc" :key="task.id">
+      <div v-for="task in tasks_asc" :key="task.id+task.subtasks.length">
         <Task :task="task" :allTasks="tasks"  @updateAllTasks="updateAllTasks" />
       </div>
       <div v-if="!tasks.length" class="text-center mt-10">

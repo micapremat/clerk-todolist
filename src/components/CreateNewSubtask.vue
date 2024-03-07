@@ -4,7 +4,7 @@ import BaseModal from './BaseModal.vue'
 import BaseButton from './BaseButton.vue'
 import axios from 'axios'
 
-const emit = defineEmits(['close', 'updateAllTasks', 'updateSubtask']);
+const emit = defineEmits(['close', 'updateAllTasks']);
 
 const props = defineProps(['task', 'allTasks'])
 
@@ -30,7 +30,7 @@ const addSubtask = () => {
     subtask.value.priority = subtask.value.priority === 'High' ? subtask.value.priority = 0 : subtask.value.priority === 'Medium' ? subtask.value.priority = 1 : subtask.value.priority = 2 
     axios.post("https://localhost:7096/api/subtask", subtask.value)
     .then((response) => {
-        emit('updateSubtask')
+        emit('updateAllTasks')
         emit('close')
     })
     .catch((e) => {

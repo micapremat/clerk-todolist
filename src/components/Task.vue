@@ -20,11 +20,6 @@ const updateAllTasks = () => {
     emit('updateAllTasks')
 }
 
-const updateSubtask = () => {
-    updateKey.value++
-    console.log(updateKey.value)
-}
-
 const updateTask = async () => {
     let taskToUpdate = task.value
     taskToUpdate.done = !taskToUpdate.done
@@ -45,7 +40,7 @@ watch(task.value.subtasks, newVal => {
 </script>
 <template>
     <div>
-        <CreateNewSubtask v-if="openCreateNewSubtask" @close="openCreateNewSubtask = false" @updateSubtask="updateSubtask" :task="task" :allTasks="allTasks"/>
+        <CreateNewSubtask v-if="openCreateNewSubtask" @close="openCreateNewSubtask = false" @updateAllTasks="updateAllTasks" :task="task" :allTasks="allTasks"/>
         <!--Alert-->
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" v-if="displayAlert">
             <span class="block sm:inline">There was an error. Please try again later.</span>
